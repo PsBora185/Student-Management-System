@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Students</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        .hover-shadow:hover {
+            transform: translateY(-3px);
+            transition: 0.3s;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15) !important;
+        }
+        .table-actions button, .table-actions a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-lg mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" th:href="@{/}">Student Management System</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/home}">🏠 Home</a></li>
+                <li class="nav-item"><a class="nav-link active" th:href="@{/students}">📋 Students</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/students/new}">➕ Add Student</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+
+    <!-- Flash messages -->
+    <div th:if="${success}" class="alert alert-success text-center shadow-sm mb-3 rounded" id="flash-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger text-center shadow-sm mb-3 rounded" id="flash-error" th:text="${error}"></div>
+
+    <script>
+        setTimeout(() => {
+            const success = document.getElementById('flash-success');
+            if(success) success.style.display = 'none';
+            const error = document.getElementById('flash-error');
+            if(error) error.style.display = 'none';
+        }, 4000);
+    </script>
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold">Student List</h2>
+        <a th:href="@{/students/new}" class="btn btn-success btn-lg hover-shadow">
+            <i class="bi bi-plus-lg"></i> Add Student
+        </a>
+    </div>
+
+    <!-- Search bar -->
+    <form th:action="@{/students}" method="get" class="row g-2 mb-4">
+        <div class="col-md-4">
+            <input type="text" name="keyword" class="form-control" placeholder="Search by name or email" th:value="${keyword}">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-outline-primary">Search</button>
+            <a th:href="@{/students}" class="btn btn-outline-secondary">Reset</a>
+        </div>
+    </form>
+
+    <!-- Students Table -->
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-striped table-bordered align-middle table-hover text-center">
+            <thead class="table-dark">
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th style="width: 160px;">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="student : ${students}">
+                <td th:text="${student.firstName}">First</td>
+                <td th:text="${student.lastName}">Last</td>
+                <td th:text="${student.email}">Email</td>
+                <td class="table-actions">
+                    <div class="d-flex gap-1 justify-content-center">
+                        <!-- View -->
+                        <a th:href="@{/students/view/{id}(id=${student.id})}" class="btn btn-info btn-sm flex-fill hover-shadow" title="View">
+                            <i class="bi bi-eye-fill"></i>
+                        </a>
+                        <!-- Edit -->
+                        <a th:href="@{/students/edit/{id}(id=${student.id})}" class="btn btn-warning btn-sm flex-fill hover-shadow" title="Edit">
+                            <i class="bi bi-pencil-fill"></i>
+                        </a>
+                        <!-- Delete -->
+                        <div class="flex-fill d-flex" style="gap:0.25rem;">
+                            <button class="btn btn-danger btn-sm flex-fill hover-shadow"
+                                    onclick="this.style.display='none'; this.nextElementSibling.style.display='flex';" title="Delete">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+                            <div style="display:none; gap:0.25rem; width:100%;">
+                                <a th:href="@{/students/{id}(id=${student.id})}" class="btn btn-success btn-sm flex-fill hover-shadow">
+                                    <i class="bi bi-check-lg"></i>
+                                </a>
+                                <button class="btn btn-secondary btn-sm flex-fill hover-shadow"
+                                        onclick="this.parentElement.style.display='none'; this.parentElement.previousElementSibling.style.display='flex';">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
